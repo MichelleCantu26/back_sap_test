@@ -34,4 +34,5 @@ ENV FLASK_APP=app.py
 ENV FLASK_ENV=production
 
 # Comando para ejecutar la aplicación
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+#CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:$PORT"]
