@@ -1,8 +1,6 @@
 from config import app, db
-import routes  # Importa las rutas
 from flask import Flask
-
-app = Flask(__name__)
+import routes  # Importa las rutas
 
 @app.route('/')
 def index():
