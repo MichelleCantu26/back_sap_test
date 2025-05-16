@@ -1,10 +1,8 @@
-FROM python:3.10-slim-buster
+FROM python:3.10-buster
 
-# Evita prompts de licencia durante la instalación
 ENV ACCEPT_EULA=Y
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Instalar dependencias del sistema necesarias para el driver de ODBC y pyodbc
 RUN apt-get update && apt-get install -y \
     gnupg2 \
     curl \
@@ -12,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     unixodbc-dev \
     gcc \
     g++ \
+    libssl1.1 \
     apt-transport-https \
     software-properties-common \
     && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
