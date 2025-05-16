@@ -446,18 +446,18 @@ def obtener_inventario():
     
 @app.route('/reportinventario', methods=['GET'])
 def obtener_reportinventario():
-    # Obtener el parámetro de fecha desde la URL
     fecha_actualizacion = request.args.get('fecha_actualizacion')
-    
+    grupo = request.args.get('grupo')
+    codigo_item = request.args.get('codigo_item')
+    bodega = request.args.get('bodega')
+
     if not fecha_actualizacion:
         return jsonify({"error": "Debe proporcionar 'fecha_actualizacion' como parámetro de consulta."}), 400
 
-    # Establecer la conexión a SAP HANA
     conn = get_hana_connection()
     if conn is None:
         return jsonify({"error": "No se pudo conectar a la base de datos HANA"}), 500
 
-    # Consulta SQL con filtro de fecha de actualización
     query = """
     SELECT "Código Item", "Nombre Item", "Costo", "Costo Total", "Partida Arancelaria", 
            "Código Almacen", "Nombre Almacen", "Cantidad", "Cantidad Comprometida", 
@@ -467,32 +467,42 @@ def obtener_reportinventario():
     WHERE "Fecha de Actualización" <= ?
     """
 
+    params = [fecha_actualizacion]
+
+    if grupo:
+        query += ' AND "Grupo" = ?'
+        params.append(grupo)
+    if codigo_item:
+        query += ' AND "Código Item" = ?'
+        params.append(codigo_item)
+    if bodega:
+        query += ' AND "Código Almacen" = ?'
+        params.append(bodega)
+
     try:
         cursor = conn.cursor()
-        cursor.execute(query, (fecha_actualizacion,))
+        cursor.execute(query, tuple(params))
         rows = cursor.fetchall()
-        
-        resultado = []
-        for row in rows:
-            resultado.append({
-                "Código Item": row[0],
-                "Nombre Item": row[1],
-                "Costo": row[2],
-                "Costo Total": row[3],
-                "Partida Arancelaria": row[4],
-                "Código Almacen": row[5],
-                "Nombre Almacen": row[6],
-                "Cantidad": row[7],
-                "Cantidad Comprometida": row[8],
-                "Stock Final": row[9],
-                "Cod Barras": row[10],
-                "Lote": row[11],
-                "Fecha de Creación": row[12],
-                "Fecha de Actualización": row[13],
-                "Fecha Vencimiento": row[14],
-                "Grupo": row[15],
-                "Subgrupo": row[16]
-            })
+
+        resultado = [{
+            "Código Item": row[0],
+            "Nombre Item": row[1],
+            "Costo": row[2],
+            "Costo Total": row[3],
+            "Partida Arancelaria": row[4],
+            "Código Almacen": row[5],
+            "Nombre Almacen": row[6],
+            "Cantidad": row[7],
+            "Cantidad Comprometida": row[8],
+            "Stock Final": row[9],
+            "Cod Barras": row[10],
+            "Lote": row[11],
+            "Fecha de Creación": row[12],
+            "Fecha de Actualización": row[13],
+            "Fecha Vencimiento": row[14],
+            "Grupo": row[15],
+            "Subgrupo": row[16]
+        } for row in rows]
 
         cursor.close()
         conn.close()
@@ -500,6 +510,7 @@ def obtener_reportinventario():
     
     except Exception as e:
         return jsonify({"error": f"Error en la ejecución de la consulta: {e}"}), 500
+
 
 @app.route('/stock-transfer-archivo', methods=['POST'])
 def stock_transfer_archivo():
