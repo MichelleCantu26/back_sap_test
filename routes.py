@@ -62,7 +62,11 @@ def login():
             set_cookie_header = response.headers.get('Set-Cookie')
             print(set_cookie_header)
             cookies_list = set_cookie_header.split(', ')
-            resp = make_response(jsonify({'message': 'Login exitoso', 'sap_response': sap_response}))   
+            resp = make_response(jsonify({
+                'message': 'Login exitoso',
+                'sap_response': sap_response,
+                'rol': user.Rol
+            }))   
             for cookie in cookies_list:
                 resp.headers.add('Set-Cookie', cookie)
             return resp, 200
