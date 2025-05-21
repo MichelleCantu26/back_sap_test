@@ -630,7 +630,7 @@ def create_inventory_transfer(doc_entry):
     # Paso 3: Construir el cuerpo del nuevo InventoryTransfer
     transfer_body = {
         "DocDate": date.today().isoformat(),
-        "Comments": f"Creado desde solicitud #{doc_entry}",
+        "Comments": f"Creado desde solicitud #{transfer_request.get('DocNum')}",
         "U_BIO_EstadoTR": "A", 
         "StockTransferLines": []
     }
