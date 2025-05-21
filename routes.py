@@ -296,7 +296,7 @@ def get_business_partner_price_list(business_partner_id):
 @app.route('/get-warehouses', methods=['GET'])
 def get_warehouses():
     # Bodegas que queremos obtener
-    warehouse_ids = ['2010', '1001', '1018', '2026', '9002']
+    warehouse_ids = ['2010', '1001', '1018', '2026','1090']
 
     # URL de login a SAP
     login_sap_url = "https://54.184.71.204:50000/b1s/v1/Login"
