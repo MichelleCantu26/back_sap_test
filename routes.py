@@ -2,6 +2,7 @@ from flask import request, jsonify, make_response
 from config import app, get_hana_connection
 from models import User
 from hdbcli import dbapi 
+from datetime import date
 import requests
 import pandas as pd
 import json
@@ -628,7 +629,7 @@ def create_inventory_transfer(doc_entry):
 
     # Paso 3: Construir el cuerpo del nuevo InventoryTransfer
     transfer_body = {
-        "DocDate": transfer_request.get("DocDate"),
+        "DocDate": date.today().isoformat(),
         "Comments": f"Creado desde solicitud #{doc_entry}",
         "U_BIO_EstadoTR": "A", 
         "StockTransferLines": []
